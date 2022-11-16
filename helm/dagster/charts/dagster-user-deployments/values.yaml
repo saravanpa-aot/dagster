@@ -20,12 +20,14 @@ celeryConfigSecretName: "dagster-celery-config-secret"
 # pipeline execution use the same image, we recommend using a unique tag (ie not "latest").
 #
 # All user code will be invoked within the images.
+
+
 ####################################################################################################
 deployments:
-  - name: "k8s-example-user-code-1"
+  - name: "dagster-etl"
     image:
       # When a tag is not supplied, it will default as the Helm chart version.
-      repository: "image-registry.openshift-image-registry.svc:5000/e903c2-tools/sample-dagster"
+      repository: "image-registry.openshift-image-registry.svc:5000/e903c2-tools/dagster-etl"
       tag: latest
       # Change with caution! If you're using a fixed tag for pipeline run images, changing the
       # image pull policy to anything other than "Always" will use a cached/stale image, which is
@@ -97,8 +99,7 @@ deployments:
     #
     # envSecrets:
     #   - name: secret
-    envSecrets:
-        - name: met-dagster
+    envSecrets: []
 
     annotations: {}
     nodeSelector: {}

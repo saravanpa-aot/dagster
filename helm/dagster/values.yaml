@@ -58,9 +58,9 @@ dagit:
     # List of servers to include in the workflow file. When set,
     # `externalConfigmap` must be empty.
     servers:
-      - host: "k8s-example-user-code-1"
+      - host: "dagster-etl"
         port: 3030
-        name: "user-code-example"
+        name: "dagster-etl"
 
     # Defines the name of a configmap provisioned outside of the
     # Helm release to use as workspace file. When set, `servers`
@@ -101,9 +101,8 @@ dagit:
   #
   # Example:
   #
-  # envSecrets:
-  #   - name: secret
   envSecrets: []
+
 
   # Additional labels that should be included on the deployment. See:
   # https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
@@ -266,10 +265,10 @@ dagster-user-deployments:
 
   # List of unique deployments
   deployments:
-    - name: "k8s-example-user-code-1"
+    - name: "etl"
       image:
         # When a tag is not supplied, it will default as the Helm chart version.
-        repository: "image-registry.openshift-image-registry.svc:5000/e903c2-tools/sample-dagster"
+        repository: "image-registry.openshift-image-registry.svc:5000/e903c2-tools/dagster-etl"
         tag: latest
 
         # Change with caution! If you're using a fixed tag for pipeline run images, changing the
@@ -324,7 +323,8 @@ dagster-user-deployments:
       #
       # envSecrets:
       #   - name: secret
-      envSecrets: []
+      envSecrets:
+          - name: met-dagster
 
       # Additional labels that should be included. See:
       # https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
@@ -398,7 +398,7 @@ pipelineRun:
   image:
     # When a tag is not supplied for a Dagster provided image,
     # it will default as the Helm chart version.
-    repository: "docker.io/dagster/user-code-example"
+    repository: "docker.io/dagster/dagster-etl"
     tag: latest
     pullPolicy: Always
 
