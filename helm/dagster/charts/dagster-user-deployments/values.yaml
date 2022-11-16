@@ -25,8 +25,8 @@ deployments:
   - name: "k8s-example-user-code-1"
     image:
       # When a tag is not supplied, it will default as the Helm chart version.
-      repository: "docker.io/dagster/user-code-example"
-      tag: ~
+      repository: "image-registry.openshift-image-registry.svc:5000/e903c2-tools/sample-dagster"
+      tag: latest
       # Change with caution! If you're using a fixed tag for pipeline run images, changing the
       # image pull policy to anything other than "Always" will use a cached/stale image, which is
       # almost certainly not what you want.
@@ -97,7 +97,8 @@ deployments:
     #
     # envSecrets:
     #   - name: secret
-    envSecrets: []
+    envSecrets:
+        - name: met-dagster
 
     annotations: {}
     nodeSelector: {}

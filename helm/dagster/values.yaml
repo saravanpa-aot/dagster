@@ -35,7 +35,7 @@ dagit:
     # When a tag is not supplied for a Dagster provided image,
     # it will default as the Helm chart version.
     repository: "docker.io/dagster/dagster-celery-k8s"
-    tag: ~
+    tag: latest
     pullPolicy: Always
 
   # Support overriding the name prefix of the Dagit pods
@@ -45,7 +45,7 @@ dagit:
     type: ClusterIP
     # Defines the port where Dagit will serve requests; if changed, don't forget to update the
     # livenessProbe and startupProbe entries below as well.
-    port: 80
+    port: 8080
     annotations: {}
 
   # Defines a workspace for Dagit. This should only be set if user deployments are enabled, but
@@ -170,7 +170,7 @@ dagit:
   readinessProbe:
     httpGet:
       path: "/dagit_info"
-      port: 80
+      port: 8080
     periodSeconds: 20
     timeoutSeconds: 3
     successThreshold: 1
@@ -269,8 +269,8 @@ dagster-user-deployments:
     - name: "k8s-example-user-code-1"
       image:
         # When a tag is not supplied, it will default as the Helm chart version.
-        repository: "docker.io/dagster/user-code-example"
-        tag: ~
+        repository: "image-registry.openshift-image-registry.svc:5000/e903c2-tools/sample-dagster"
+        tag: latest
 
         # Change with caution! If you're using a fixed tag for pipeline run images, changing the
         # image pull policy to anything other than "Always" will use a cached/stale image, which is
@@ -286,8 +286,10 @@ dagster-user-deployments:
       #   - "-a"
       #   - "define_demo_execution_repo"
       dagsterApiGrpcArgs:
+        - "-d"
+        - "/etl_project/services"
         - "--python-file"
-        - "/example_project/example_repo/repo.py"
+        - "/etl_project/services/repo.py"
       port: 3030
 
       # Whether or not to include configuration specified for this user code deployment in the pods
@@ -397,7 +399,7 @@ pipelineRun:
     # When a tag is not supplied for a Dagster provided image,
     # it will default as the Helm chart version.
     repository: "docker.io/dagster/user-code-example"
-    tag: ~
+    tag: latest
     pullPolicy: Always
 
   # Additional environment variables to set.
@@ -549,7 +551,7 @@ runLauncher:
         # When a tag is not supplied for a Dagster provided image,
         # it will default as the Helm chart version.
         repository: "docker.io/dagster/dagster-celery-k8s"
-        tag: ~
+        tag: latest
         pullPolicy: Always
 
       # Support overriding the name prefix of Celery worker pods
@@ -700,7 +702,7 @@ runLauncher:
 postgresql:
   # set postgresql.enabled to be false to disable deploy of a PostgreSQL database and use an
   # existing external PostgreSQL database
-  enabled: true
+  enabled: false
 
   # Used by init container to check that db is running. (Even if enabled:false)
   image:
@@ -709,16 +711,16 @@ postgresql:
     pullPolicy: IfNotPresent
 
   # set this PostgreSQL hostname when using an external PostgreSQL database
-  postgresqlHost: ""
+  postgresqlHost: "postgresql-dag"
 
-  postgresqlUsername: test
+  postgresqlUsername: userA0M
 
   # Note when changing this password (e.g. in test) that credentials will
   # persist as long as the PVCs do -- see:
   # https://github.com/helm/charts/issues/12836#issuecomment-524552358
-  postgresqlPassword: test
+  postgresqlPassword: lT7HJrBu8vfiffmU
 
-  postgresqlDatabase: test
+  postgresqlDatabase: dag
 
   # set postgresql parameter keywords for the connection string.
   # see: https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS
@@ -997,7 +999,7 @@ dagsterDaemon:
     # When a tag is not supplied for a Dagster provided image,
     # it will default as the Helm chart version.
     repository: "docker.io/dagster/dagster-celery-k8s"
-    tag: ~
+    tag: latest
     pullPolicy: Always
 
   heartbeatTolerance: 300
@@ -1202,7 +1204,7 @@ migrate:
 # https://docs.dagster.io/getting-started/telemetry
 ####################################################################################################
 telemetry:
-  enabled: true
+  enabled: false
 
 serviceAccount:
   create: true
